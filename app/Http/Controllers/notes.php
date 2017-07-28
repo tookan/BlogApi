@@ -37,7 +37,7 @@ public function getUser(){
 public function searchService($searchTerm){
 
 $response = Note::select('title','id')->where('title','LIKE', $searchTerm.'%')->get();
-//return response()->json($response);
-    dd($response);
+return response()->json($response);
+
 }
 }
