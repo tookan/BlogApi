@@ -28,4 +28,5 @@ Route::group(['namespace' => 'api'], function(){
 
     Route::post('/users/posttest',['uses'=>'users@postTest','as' => 'testing']);
     Route::post('/users/login','users@login');
+    Route::get('/users/returnlogined','users@returnLogined');
 });
