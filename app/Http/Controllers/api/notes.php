@@ -25,8 +25,9 @@ $notes = $user->notes()->select('title','body')->get()->all();
         return response()->json($note);
     }
     public function getPagesCount() {
-        $count =  DB::table('notes')->select(DB::raw("COUNT(id)/".self::pageSize." as count" ))->get()->first();
-       $count = ceil($count->count);
+       /* $count =  DB::table('notes')->select(DB::raw("COUNT(id)/".self::pageSize." as count" ))->get()->first();
+       $count = ceil($count->count);*/
+       $count= 18;
         return response()->json($count);
 }
 public function getUser(){
