@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 use DB;
 use App\note;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
-
+use App\Http\Controllers\Controller;
 
 class notes extends Controller
 {
@@ -35,9 +35,11 @@ public function getUser(){
 }
 
 public function searchService($searchTerm){
-
 $response = Note::select('title','id')->where('title','LIKE', $searchTerm.'%')->get();
 return response()->json($response);
-
+}
+public function getCurrentUser(){
+    $response = Auth::user();
+    return response()->json($response);
 }
 }

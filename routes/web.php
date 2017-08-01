@@ -1,4 +1,7 @@
 <?php
 
-Route::get('/notes/getall',['middleware' => 'cors','uses'=>'notes@getAll']);
-Route::get('/notes/getonenote/{id}',['middleware' => 'cors','uses'=>'notes@getDetailedNote']);
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
