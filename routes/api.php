@@ -28,5 +28,6 @@ Route::group(['namespace' => 'api'], function(){
 
     Route::post('/users/posttest',['uses'=>'users@postTest','as' => 'testing']);
     Route::post('/users/login','users@login');
-    Route::get('/users/register','users@register');
+    Route::post('/users/register','users@register');
+    Route::post('/users/cookieslogin','users@cookiesLogin')->middleware('auth:api');
 });

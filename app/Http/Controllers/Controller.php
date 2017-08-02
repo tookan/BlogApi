@@ -11,9 +11,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function formatValidationErrors(Validator $validator)
+   /* protected function formatValidationErrors(Validator $validator)
     {
         return response()->json(['error'=>$validator->errors()->all], 401 );
-    }
+    }*/
 
 }
