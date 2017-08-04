@@ -21,7 +21,7 @@ $user = User::where('user',$username)->first();
 $notes = $user->notes()->select('title','body')->get()->all();
     }
     public function getDetailedNote($id){
-        $note= Note::where('id',$id)->get()->first();
+        $note= Note::select('id','title','body')->where('id',$id)->get()->first();
         return response()->json($note);
     }
     public function getPagesCount() {
@@ -29,10 +29,6 @@ $notes = $user->notes()->select('title','body')->get()->all();
        $count = ceil($count->count);*/
        $count= 18;
         return response()->json($count);
-}
-public function getUser(){
-        $user = Auth::user();
-       return response()->json($user);
 }
 
 public function searchService($searchTerm){
