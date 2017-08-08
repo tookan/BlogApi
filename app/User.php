@@ -29,6 +29,6 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     public function notes(){
-        return $this->hasMany('note');
+        return $this->hasMany('App\note');
     }
 }
