@@ -27,6 +27,7 @@ Route::group(['namespace' => 'api'], function(){
     Route::post('/notes/notecreate',['uses'=>'notes@noteCreate'])->middleware('auth:api');
     Route::post('/notes/noteupdate','notes@noteUpdate')->middleware('auth:api');
     Route::post('/notes/notedelete','notes@noteDelete')->middleware('auth:api');
+    Route::post('/notes/uploadimagestest','notes@ImgTest')->middleware('auth:api');
   //  Route::get('/notes/getcurrentuser',['uses'=>'notes@getCurrentUser']);
   //  Route::get('/checkuser','notes@getUser');
 
