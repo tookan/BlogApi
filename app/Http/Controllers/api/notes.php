@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 
 class notes extends Controller
@@ -41,7 +42,7 @@ class notes extends Controller
 
     public function noteCreate(Request $request)
     {
-        $this->validate($request, ['title' => 'required', 'body' => 'required']);
+        $this->validate($request, ['title' => 'required| max: 120', 'body' => 'required']);
         $input = $request->all();
         $input['user_id'] = Auth::user()['id'];
         $currentNote = note::create($input);
@@ -63,10 +64,11 @@ class notes extends Controller
             ->orderBy('notes.created_at','desc')
             ->get();
         foreach ($notes as $note) {
-            $note['body'] = substr($note['body'], 0, 120);
-            if (images::getImageUrl($note['id'], 1)) $note['img'] = images::getImageUrl($note['id'], 1);
+            $note['body'] = Str::substr($note['body'], 0, 120);
+           if (images::getImageUrl($note['id'], 1)) $note['img'] = images::getImageUrl($note['id'], 1);
         }
         $pagesCount = $this->getPagesCount();
+
         return response()->json(['notes' => $notes, 'pagesCount' => $pagesCount]);
     }
 
@@ -89,7 +91,7 @@ class notes extends Controller
 
     public function getDetailedNote($id)
     {
-        $note = Note::select('notes.id as id', 'title', 'body', 'users.name as username')->where('notes.id', $id)
+        $note = Note::select('notes.id as id', 'title', 'body', 'users.name as username','notes.created_at as date')->where('notes.id', $id)
             ->join('users', 'notes.user_id', '=', 'users.id')
             ->get()
             ->first();
