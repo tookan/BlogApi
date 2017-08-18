@@ -35,7 +35,14 @@ Route::group(['namespace' => 'api'], function(){
     Route::post('/users/login','users@login');
     Route::post('/users/register','users@register');
     Route::post('/users/cookieslogin','users@cookiesLogin')->middleware('auth:api');
+    Route::post('/users/getAll','users@getUsersAndProfiles')->middleware('auth:api');
+    Route::post('/users/update','users@updateUser');
+    Route::post('/users/delete','users@deleteUser');
+    Route::get('/users/search/{term}','users@search');
 
     Route::post('/comments/sendcomment','comments@sendComment')->middleware('auth:api');
     Route::get('/comments/getcomments/{noteId}','comments@getComments');
+    Route::post('/comments/user','comments@getCommentsForUser');
+    Route::post('/comments/update','comments@updateComment')->middleware('auth:api');
+    Route::post('/comments/delete','comments@deleteComment')->middleware('auth:api');
 });
