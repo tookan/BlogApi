@@ -20,14 +20,14 @@ class notes extends Controller
 {
     const pageSize = 6;
 
-    public function getPagesCount()
+    protected function getPagesCount()
     {
         $count = Note::count();
         $count = ceil($count / self::pageSize);
         return response()->json($count);
     }
 
-    public function getUserPagesCount($username)
+    protected function getUserPagesCount($username)
     {
         $userId = User::select('id')->where('name','=',$username)->pluck('id');
        $count = Note::where('user_id','=', $userId)->count();
@@ -35,22 +35,26 @@ class notes extends Controller
        return $count;
     }
 
-    public function searchService($searchTerm)
+    protected function searchService($searchTerm)
     {
+        $offset = 1;
+        $count = Note::where('title', 'LIKE', $searchTerm . '%')->count();
         $notes = Note::select('users.name as username', 'notes.body as body',
             'notes.id as id', 'notes.title as title','small_img as img', 'notes.created_at as date')
             ->where('title', 'LIKE', $searchTerm . '%')
             ->join('users', 'notes.user_id', '=', 'users.id')
+            ->skip(($offset - 1)*10)
+            ->take(10)
             ->get();
         foreach ($notes as $note) {
-            $note['body'] = substr(html_entity_decode($note['body']), 0, 120);
+            $note['body'] = html_entity_decode($note['body']);
         }
-        return response()->json($notes);
+        return response()->json(['notes'=> $notes, 'count' => $count ]);
     }
 
-    public function noteCreate(Request $request)
+    protected function noteCreate(Request $request)
     {
-        $this->validate($request, ['title' => 'required| max: 120', 'body' => 'required']);
+        $this->validate($request, ['title' => 'required| max: 120', 'body' => 'required'],['body' => 'Please fill your article contents']);
         $input = $request->all();
         $input['body'] = htmlentities($input['body']);
         $input['user_id'] = Auth::user()['id'];
@@ -60,17 +64,15 @@ class notes extends Controller
             $noteId = $currentNote->id;
             $pathway = Storage::disk('public')->put('photo/n' . $noteId , $image);
             Storage::disk('public')->makeDirectory('small_photo/n'.$noteId);
-            $bigImgUrl = Storage::disk('public')->url($pathway);
-            $smallImgUrl = Storage::disk('public')->url('small_'.$pathway);
-            $imgs['big_img'] = $bigImgUrl;
-            $imgs['small_img'] = $smallImgUrl;
+            $imgs['big_img'] = Storage::disk('public')->url($pathway);
+            $imgs['small_img'] = Storage::disk('public')->url('small_'.$pathway);
            images::imageCrop( $pathway);
            Note::where('id',$noteId)->update($imgs);
         }
         return response('Created successfully', 200);
     }
 
-    public function getAllByAll($offset = 1)
+    protected function getAllByAll($offset = 1)
     {
         $notes = Note::select('notes.id as id', 'title', 'body', 'users.name as username','small_img as img')
             ->skip(($offset - 1) * self::pageSize)->take(self::pageSize)
@@ -85,7 +87,7 @@ class notes extends Controller
         return response()->json(['notes' => $notes, 'pagesCount' => $pagesCount]);
     }
 
-    public function getAllByUser($username, $pageNumber)
+    protected function getAllByUser($username, $pageNumber)
     {
         $notes = User::select('users.name as username', 'notes.body as body', 'notes.id as id',
             'notes.created_at as date','notes.title as title','small_img as img')
@@ -103,7 +105,7 @@ class notes extends Controller
         return response()->json(['notes'=> $notes,'pagesCount'=> $pagesCount, 'profile'=>$profile], 200);
     }
 
-    public function getDetailedNote($id)
+    protected function getDetailedNote($id)
     {
         $note = Note::select('notes.id as id', 'title', 'body', 'users.name as username','notes.created_at as date','big_img as img')
             ->where('notes.id', $id)
@@ -116,7 +118,8 @@ class notes extends Controller
 
     function noteUpdate(Request $request)
     {
-        $this->validate($request, ['title' => 'required', 'body' => 'required', 'id' => 'required']);
+        $this->validate($request, ['title' => 'required', 'body' => 'required', 'id' => 'required'],
+            ['body.required' => 'Please fill your article contents']);
         $input = $request->all();
         $input['body'] = htmlentities($input['body']);
         $user = Auth::user();
@@ -129,10 +132,8 @@ class notes extends Controller
                 images::deleteImages($noteId);
                 $pathway = Storage::disk('public')->put('photo/n' . $noteId , $image);
                 Storage::disk('public')->makeDirectory('small_photo/n'.$noteId);
-                $bigImgUrl = Storage::disk('public')->url($pathway);
-                $smallImgUrl = Storage::disk('public')->url('small_'.$pathway);
-                $imgs['big_img'] = $bigImgUrl;
-                $imgs['small_img'] = $smallImgUrl;
+                $imgs['big_img'] = Storage::disk('public')->url($pathway);
+                $imgs['small_img'] = Storage::disk('public')->url('small_'.$pathway);
                 images::imageCrop( $pathway);
                 Note::where('id',$noteId)->update($imgs);
             }
@@ -140,7 +141,7 @@ class notes extends Controller
         } else return response('This note don\'t belongs to you', 401);
     }
 
-    function noteDelete(Request $request)
+    protected function noteDelete(Request $request)
     {
         $this->validate($request, ['id' => 'required']);
         $id = $request->id;
