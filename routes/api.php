@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+/*Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
-});
+});*/
 
 Route::group(['namespace' => 'api'], function(){
 
@@ -23,7 +23,7 @@ Route::group(['namespace' => 'api'], function(){
     Route::get('/notes/user/{name}/{pageNumber}','notes@getAllByUser');
     Route::get('/notes/getonenote/{id}',['uses'=>'notes@getDetailedNote']);
     Route::get('/notes/getpagescount',['uses'=>'notes@getPagesCount']);
-    Route::get('/notes/searchservice/{searchTerm}',['uses'=>'notes@searchService']);
+    Route::get('/notes/searchservice/{searchTerm}/{offset}',['uses'=>'notes@searchService']);
     Route::post('/notes/notecreate',['uses'=>'notes@noteCreate'])->middleware('auth:api');
     Route::post('/notes/noteupdate','notes@noteUpdate')->middleware('auth:api');
     Route::post('/notes/notedelete','notes@noteDelete')->middleware('auth:api');
@@ -39,6 +39,7 @@ Route::group(['namespace' => 'api'], function(){
     Route::post('/users/update','users@updateUser');
     Route::post('/users/delete','users@deleteUser');
     Route::get('/users/search/{term}','users@search');
+    Route::post('/users/updateProfile','users@profileRequestHandler')->middleware('auth:api');
 
     Route::post('/comments/sendcomment','comments@sendComment')->middleware('auth:api');
     Route::get('/comments/getcomments/{noteId}','comments@getComments');
