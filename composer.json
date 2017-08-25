@@ -5,9 +5,8 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.4",
+        "php": ">=5.6.31",
         "barryvdh/laravel-cors": "^0.9.2",
-        "doctrine/dbal": "^2.6",
         "intervention/image": "^2.4",
         "laravel/framework": "5.4.*",
         "laravel/passport": "^3.0",
