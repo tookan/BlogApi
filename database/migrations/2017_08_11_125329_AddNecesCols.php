@@ -14,14 +14,12 @@ class AddNecesCols extends Migration
     public function up()
     {
         Schema::table('users_profiles', function (Blueprint $table){
-           $table->string('avatar');
+           $table->string('avatar')->default('');
         });
-        Schema::table('users', function (Blueprint $table){
-            $table->string('status');
-        });
+    
         Schema::table('notes', function (Blueprint $table){
-            $table->string('big_img');
-            $table->string('small_img');
+            $table->string('big_img')->default('');
+            $table->string('small_img')->default('');
         });
     }
 

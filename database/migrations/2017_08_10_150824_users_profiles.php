@@ -12,10 +12,10 @@ class UsersProfiles extends Migration
         Schema::create('users_profiles',function (Blueprint $table){
            $table->bigIncrements('id');
            $table->bigInteger('user_id');
-           $table->string('name',20);
-           $table->string('last_name',30);
-           $table->string('middle_name',30);
-           $table->string('about',800);
+           $table->string('first_name',20)->nullable();
+           $table->string('last_name',30)->nullable();
+           $table->string('middle_name',30)->nullable();
+           $table->string('about',800)->nullable();
         });
     }
 
@@ -26,6 +26,7 @@ class UsersProfiles extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('users_profiles');
+		
     }
 }

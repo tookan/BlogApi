@@ -50,9 +50,9 @@ class users extends Controller
         $inputToProfile['user_id'] = $serviceUser->id;
         if($request->hasFile('avatar')){
             $avatar = $request->file('avatar');
-        }
+        }else $avatar = null;
         $this->updateCreateProfile($inputToProfile, $avatar);
-        return (new Response('Registered!', 200))->header('Location', 'http://localhost:4200');
+        return (new Response('Registered!', 200));
 
     }
 
@@ -61,7 +61,7 @@ class users extends Controller
         $user = Auth::user();
         $forResponse ['username'] = $user->name;
         $forResponse['status'] = User::select('status')->where('id', $user['id'])->pluck('status')->first();
-        return response()->json($forResponse, 200)->header('Access-Control-Allow-Origin', 'http://localhost:4200');
+        return response()->json($forResponse, 200);
     }
 
     public function getUsersAndProfiles(Request $request)
@@ -96,7 +96,7 @@ class users extends Controller
         $toProfiles['user_id'] = $userId;
         if($request->hasFile('avatar')){
             $avatar = $request->file('avatar');
-        }
+        }else $avatar = null;
         $this->updateCreateProfile($toProfiles, $avatar);
         return response('ok', 200);
     }
